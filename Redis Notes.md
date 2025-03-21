@@ -65,19 +65,19 @@ public RedisTempelate<String,Object>redisTemplate (RedisConnectionFactory redisC
 
 #### 2.2.1 普通卷
 
-![image-20250319103811301](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250319103811301.png)
+![image-20250319103811301](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135301172.png)
 
 #### 2.2.2 秒杀卷（同时拥有普通卷的数据表信息）
 
-![image-20250319103958096](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250319103958096.png)
+![image-20250319103958096](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135306174.png)
 
 #### 2.2.3 java中保存优惠卷
 
-![image-20250319105401475](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250319105401475.png)
+![image-20250319105401475](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135309693.png)
 
 #### 2.3 实现秒杀卷下单
 
-![image-20250319104645494](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250319104645494.png)
+![image-20250319104645494](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135314883.png)
 
 ## 3.  Redis三大问题
 
@@ -87,82 +87,82 @@ public RedisTempelate<String,Object>redisTemplate (RedisConnectionFactory redisC
 
 在进行数据预热时，可以将缓存中所有的id计算hash值，存入布隆过滤器中
 
-![image-20250320213708439](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320213708439.png)
+![image-20250320213708439](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135318401.png)
 
 
 
 存在问题：会误判，解决方式：设置误判率，一般在5%
 
-![image-20250320214159715](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320214159715.png)
+![image-20250320214159715](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135321573.png)
 
 #### 3.1.2 存储空值入redis中
 
 ### 3.2 缓存击穿
 
-![image-20250320212857639](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320212857639.png)
+![image-20250320212857639](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135328319.png)
 
 - 使用互斥锁 ----------保证强一致性，但是性能差
-- 使用逻辑过期------允许有一定时间的不一致，性能优异，
+- 使用逻辑过期------允许有一定时间的不一致，性能优异。
 
 ### 3.3 双写一致性
 
 #### 3.3.1 先写数据库还是先写缓存？
 
-![image-20250320215157669](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320215157669.png)
+![image-20250320215157669](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135325183.png)
 
 #### 3.3.2 如何加强一致性？
 
 1. 延迟双删
 
-![image-20250320215323945](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320215323945.png)
+![image-20250320215323945](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135332683.png)
 
 2. 添加分布式锁
 
-![image-20250320215525612](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320215525612.png)
+![image-20250320215525612](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135336595.png)
 
-![image-20250320215656527](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320215656527.png)
+![image-20250320215656527](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135340369.png)
 
 ## 4 Redis持久化（RDB和AOF）
 
 ### 4.1 RDB实现方式：
 
-![image-20250320220334568](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320220334568.png)
+![image-20250320220334568](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135343487.png)
 
 ### 4.2 RDB的执行原理
 
 - 子进程拷贝页表时只需要纳秒级别的时间，可以忽略不计
 
-![image-20250320220729375](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320220729375.png)
+![image-20250320220729375](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135348951.png)
 
 - 在子线程写RDB文件过程中，如果主进程进行写操作改变了物理内存，会出现冲突，如何处理？
 
-![image-20250320221020129](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320221020129.png)
+![image-20250320221020129](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135352050.png)
 
 ### 4.3 AOF
 
-![image-20250320221508627](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320221508627.png)
+![image-20250320221508627](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135354935.png)
 
-![image-20250320221611227](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320221611227.png)
+![image-20250320221611227](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135357742.png)
 
 一般采用everysec
 
 缺点：
 
-![image-20250320221918447](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320221918447.png)
+![image-20250320221918447](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135405548.png)
 
 ### 4.4 RDB对比AOF
 
-![image-20250320222007252](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320222007252.png)
+![image-20250320222007252](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135408227.png)
 
 ## 5 数据过期策略
 
 ### 5.1 惰性删除策略
 
-![image-20250320222655268](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320222655268.png)
+![image-20250320222655268](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135411451.png)
 
 ### 5.2 定期删除策略
 
-![image-20250320223028560](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320223028560.png)
+![image-20250320223028560](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135418668.png)
 
 Ps：***10hz指的是，每秒执行十次***
 
@@ -172,10 +172,10 @@ Ps：***10hz指的是，每秒执行十次***
 
 ### 6.1 八种淘汰策略
 
-![image-20250320223845072](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320223845072.png)
+![image-20250320223845072](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135415258.png)
 
 ### 6.2 策略选择建议
 
-![image-20250320224150682](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320224150682.png)
+![image-20250320224150682](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135426311.png)
 
-![image-20250320224237858](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320224237858.png)
+![image-20250320224237858](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135429061.png)

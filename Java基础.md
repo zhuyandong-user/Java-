@@ -16,7 +16,7 @@ int i2 = i; ------> int i2 = Integer.value(i);
 
 ### 1.3 其他功能
 
-![image-20250320133349372](C:\Users\NTZYD\AppData\Roaming\Typora\typora-user-images\image-20250320133349372.png)
+![image-20250320133349372](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321135239094.png)
 
 ```java
 //string类转int
