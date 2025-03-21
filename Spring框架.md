@@ -156,3 +156,12 @@ Bean保存到IOC容器中和Spring缓存中，这个阶段就可以被开发者�
 
 ### 7.1 Spring的常见注解
 
+![image-20250321140434665](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321140436676.png)
+
+### 7.2 SpringMVC常见注解
+
+![image-20250321141327016](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321141343849.png)
+
+### 7.3 SpringBoot常见注解
+
+![image-20250321141637880](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321141637925.png)
