@@ -584,3 +584,103 @@ public class RpcRequest implements Serializable {
 java中涉及语法糖的语法非常多，这里直接参考JavaGuide中的相关内容
 
 # 代理模式详解
+
+# 单例模式
+
+## 饿汉式
+
+![image-20250407092423357](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407092430579.png)
+
+**破坏单例模式的方法**
+
+**1 反射破坏单例**
+
+![image-20250407092844900](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407092845020.png)
+
+![image-20250407092838230](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407092838380.png)
+
+**解决方法**：在私有构造器中判断实例是否已经创建，抛异常
+
+![image-20250407092755549](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407092755699.png)
+
+**2 反序列化破坏单例**
+
+先决条件，单例类实现了serialize接口
+
+![image-20250407093144664](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407093144788.png)
+
+![image-20250407093123874](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407093123998.png)
+
+**解决方法**
+
+在单例类中声明一个readResolve方法
+
+![image-20250407093342140](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407093342281.png)
+
+在声明该方法后，就不会用字节数组反序列化时生成的对象
+
+**3 Unsafe破坏单例**
+
+![image-20250407094317072](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407094317216.png)
+
+**解决方法** 暂时没有
+
+## 枚举饿汉式
+
+当我们定义了一个枚举类的时候
+
+![image-20250407094857935](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407094858082.png)
+
+实际上，编译器会把它编译成一个类的形式
+
+![image-20250407094838222](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407094838347.png)
+
+**枚举类实现饿汉式单例**
+
+![image-20250407094951681](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407094951821.png)
+
+ **破坏单例的方法**
+
+- 反射不能破坏，枚举类内部做了检查，如果试图用反射去破坏，会抛异常
+- 反序列化不会破坏，在反序列化时会直接返回原先枚举类的实例，而不是用用字节数组生成的对象作为结果
+- Unsafe可以破坏
+
+## 懒汉式单例
+
+![image-20250407100217693](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407100217812.png)
+
+线程安全问题
+
+## DCL懒汉式
+
+不同于普通的懒汉式，DCL懒汉式加了双重检测锁
+
+![image-20250407101157613](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407101157726.png)
+
+**为什么检查两次？**
+
+假设有两个线程在第一个if中都判断成功了，进入锁，线程1成功进入，线程2进入阻塞队列。
+
+倘若没有第二层if，线程2进入同步代码块时还是会重复创建
+
+**为什么加volatile关键字？**
+
+`INSTANCE=new Singleton()`这段代码其实是分为三步执行：
+
+1. 为 `INSTANCE` 分配内存空间
+2. 初始化 `INSTANCE`
+3. 将 `INSTANCE` 指向分配的内存地址
+
+但是由于 JVM 具有指令重排的特性，执行顺序有可能变成 1->3->2。指令重排在单线程环境下不会出现问题，但是在多线程环境下会导致一个线程获得还没有初始化的实例。例如，线程 T1 执行了 1 和 3，此时 T2 调用 `getUniqueInstance`() 后发现 `uniqueInstance` 不为空，因此返回 `uniqueInstance`，但此时 `uniqueInstance` 还未被初始化。
+
+![image-20250407102413389](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407102413527.png)
+
+**加了volatile后发生了什么**
+
+volatile给语句加上了屏障，这使得语句上面的语句无法越过屏障跑到下面，也就阻止了指令的重排序
+
+![image-20250407102706958](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407102707051.png)
+
+## 内部懒汉式
+
+![image-20250407103048591](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250407103048738.png)
