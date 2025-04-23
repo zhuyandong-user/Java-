@@ -50,7 +50,7 @@ ps：默认只会回滚运行时异常
 
 
 
-1. 根据XML或注解或配置的声明方式，通过解析和加载后成BeanDefinition,并将BeanDefinition注册到IOC容器里面
+1. 根据XML或注解或配置的声明方式，把bean的信息封装成一个BeanDefinition对象,并将BeanDefinition注册到IOC容器里面
 
    ![image-20250321103841713](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321130420831.png)
 
@@ -151,6 +151,10 @@ Bean保存到IOC容器中和Spring缓存中，这个阶段就可以被开发者�
 ![image-20250321134336998](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321134338246.png)
 
 ![image-20250321133350542](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250321133406382.png)
+
+**class文件什么时候存在？**
+
+当导入了相关的起步依赖的时候
 
 ## 7 Spring框架常见注解
 

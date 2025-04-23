@@ -104,16 +104,83 @@ set global long_query_time = 1;
 
 ![image-20250323224316842](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250323224316966.png)
 
-## 3 sql优化经验
+## 3 SQL优化经验
 
-### 3.1 表的设计优化
+### 3.1 insert语句优化
 
-![image-20250323224514309](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250323224514367.png)
+- **选择批量插入，而不是单条插入**
 
-### 3.2 SQL语句优化
+每次执行插入操作需要与数据库进行连接和网络传输
 
-![image-20250323224530446](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250323224530504.png)
+`insert into tb_name values(1,'adsf')(2,'asdfa')...`
 
-### 3.3 主从复制，读写分离
+- **选择手动提交事务，而不是让数据库自动提交事务**
 
-![image-20250323224903969](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250323224904064.png)
+数据库在提交事务之前需要开启事务，每执行一次都要开启一次。
+
+选择自己手动提交事务，在执行语句之前开启事务，在语句全部执行完成之后提交事务。
+
+`start transaction`
+
+`insert into tb_name values(1,'adsf')(2,'asdfa')...`
+
+`insert into tb_name values(1,'adsf')(2,'asdfa')...`
+
+`insert into tb_name values(1,'adsf')(2,'asdfa')...`
+
+`commit`
+
+- **主键顺序插入，而不是乱序插入**
+- **大批量插入数据**
+
+如果一次性插入大批量数据，使用MySQL提供的load指令而不是insert（性能太低）
+
+![image-20250410145225168](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250410145232383.png)
+
+### 3.2 主键优化
+
+- 满足业务需求下，尽量降低主键的长度，因为每个二级索引的叶子节点中会存储主键，主键长度过长会造成内存占用过大
+
+- 插入数据尽量选择顺序插入，选择使用AUTO_INCREMENT自增主键，如果主键乱序可能导致
+
+  [^页分裂]: 什么是页分裂，参考黑马MySQL part90
+
+- 尽量不要使用UUID做主键或者是其他自然主键，如身份证号
+- 业务操作时尽量避免对主键的修改
+
+### 3.3 order by语句优化
+
+**MySQL中的两种排序实现方式：**
+
+![image-20250410155914725](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250410155914780.png)
+
+![image-20250410155538852](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250410155538933.png)
+
+![image-20250410155642050](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250410155642164.png)
+
+总结： 
+
+![image-20250410155936709](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250410155936766.png)
+
+### 3.3 group by优化
+
+在分组操作时，可以通过索引来提高效率，同时要满足最左前缀法则
+
+### 3.4 limit语句优化
+
+存在的问题？
+
+![image-20250410161418746](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250410161418807.png)
+
+解决方法
+
+![image-20250410161939948](https://java-sky-take-outzyd.oss-cn-beijing.aliyuncs.com/typora/20250410161940042.png)
+
+### 3.5 update语句优化
+
+没有索引可能会把行锁升级为表锁
+
+InnoDB的行锁是针对索引加的锁，不是针对记录加的锁，并且该索引不能失效，否则会从行锁升级=为表锁
+
+所以更新的where条件一定要加索引，避免升级为表锁
+
